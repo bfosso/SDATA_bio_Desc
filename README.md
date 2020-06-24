@@ -1,10 +1,15 @@
 # Passaro_et_al 2020
-This repository describes all the bioinformatic steps performed in [Passaro et al 2019](https://www.nature.com/articles/s41598-019-56240-1) and Passaro et al 2020.  
-The raw data mentioned in the paper are available in the *SRA* repository under the Bioprojec [PRJNA544407](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA544407).  
+This repository describes all the bioinformatic steps performed in [Passaro et al 2019](https://www.nature.com/articles/s41598-019-56240-1) and **NNNNNNNN**.  
+The raw data mentioned in the paper are available in the *SRA* repository under the Bioproject [PRJNA544407](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA544407).  
+The bioinformatic pipeline relies on 3 main steps:  
+1. Taxonomic assignment of Illumina PE reads by exploiting **MetaShot**;  
+2. Meta-assembly of unassigned reads;  
+3. Taxonomic assignments of the obtained contigs/scaffolds.  
+The described procedure allows users to replicate the whole procedure or just reproduce on of the steps and the intermediate data are available as a **Zenodo** repository.  
 
 ## Requirements
 ### Bioinformatic tools and packages
-All the steps described below rely on several bioinformatic tools and packages whose installation and configuration is necessary to properly reproduce all the listed steps.  
+All the steps described below rely on several bioinformatic tools and packages whose installation and configuration is required to properly reproduce all the listed steps.  
 Following the list of required tools:  
   * [**MetaShot (Metagenomics Shotgun)**](https://github.com/bfosso/MetaShot) \[[PMID: 28130230](https://pubmed.ncbi.nlm.nih.gov/28130230/)\] is a pipeline designed for the complete taxonomic assessment of the human microbiota. In MetaShot, third party tools and new developed Python and Bash scripts are integrated to analyse *paired-end (PE) Illumina reads*, offering an automated procedure covering all the analysis steps from raw data management to taxonomic profiling. It is designed to analyse both DNA-Seq and RNA-Seq data. Among the tools required in MetaShot, **bowtie2** is also listed, so it can be installed only once.   
   * [**metaSPAdes**](http://cab.spbu.ru/software/meta-spades/) \[[PMID: 28298430](https://pubmed.ncbi.nlm.nih.gov/28298430/)\] is an assembler designed to obtain high quality assembly of metegenomes.  
@@ -15,7 +20,9 @@ Following the list of required tools:
   * [**SRA toolkit**](https://github.com/ncbi/sra-tools) is a suite of tools allowing to access the INSDC content.  
 
 ### Required data files
-The reference data required by MetaShot are available and widely described in its *github* repository. It also contains the **human genome assembly hg19**.  
+The link to the MetaShot reference is available its *github* repository, where it is also available a description of the required configurations.  
+*Please note that the download and configuration of MetaShot reference data is required only in case you want to reproduce the whole pipeline.*   
+It also contains the **human genome assembly hg19**.  
 In order to build the *hg19* **bowtie2** indexes, type the following line:
 ```
 bowtie2-build /path/to/MetaShot_reference_data/Homo_sapiens/hg19.fa.gz hg19
@@ -27,12 +34,12 @@ The human micro-satellites sequences for the hg19 assembly were obtained from th
 In order to improve the analysis reproducibility both the files are available **HERE**.  
 
 ## Bioinformatic Workflow
-The bioinformatic pipeline relies on 3 main steps:  
-1. Taxonomic assignment of Illumina PE reads by exploiting MetaShot;  
-2. Meta-assembly of unassigned reads;  
-3. Taxonomic assignments of the obtained contifs/scaffolfs.  
 
-The first two steps may be skipped by using the processed data available in the [*Zenodo*]() repository.
+
+For reproducibility purposes, sequencing data were deposited as raw reads. Nonetheless, considering that the most intense and computational expensive steps of the bioinformatic workflow were the taxonomic assignment and the metagenome assembly performed by MetaShot and metaSPAdes, respectively, and in order to facilitate the analysis reproducibility by avoiding to repeat one or both these steps, the **unassigned PE reads** and the **assembled scaffolds** are available in a [*Zenodo*]() repository:  
+* [MetaShot unassigned read]());  
+* [Scaffolds]()).  
+
 
 ### 1. Taxonomic assignment of Illumina PE reads by exploiting MetaShot
 The whole MetaShot workflow was performed by typing the following command:  
