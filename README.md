@@ -18,6 +18,7 @@ Following the list of required tools:
   * [**metaSPAdes**](http://cab.spbu.ru/software/meta-spades/) \[[PMID: 28298430](https://pubmed.ncbi.nlm.nih.gov/28298430/)\] is an assembler designed to obtain high quality metegenomes assemblies.  
   * [**WindowMasker**](https://www.ncbi.nlm.nih.gov/toolkit) \[[PMID: 16287941](https://pubmed.ncbi.nlm.nih.gov/16287941/)\]  identifies and masks highly repetitive DNA sequences in a contigs/scaffolds. It is included in the NCBI C++ toolkit.  
   * [**RepeatMasker**](http://www.repeatmasker.org/) \[[PMID: 19274634](https://pubmed.ncbi.nlm.nih.gov/19274634/)\] allows to identify, classify, and mask repetitive elements, including low-complexity sequences and interspersed repeats.  
+  * [**BLAST+**](https://www.ncbi.nlm.nih.gov/books/NBK279690/) \[[PMID: 20003500](https://pubmed.ncbi.nlm.nih.gov/20003500/)\] inds regions of local similarity between sequences.  
   * [**Custom Perl scripts**](https://github.com/matteo14c/Passaro_et_al) developed by [Dr. Matteo Chiara](mailto:matteo.chiara@unimi.it)  
   * [**bowtie2**](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml) \[[PMID: 22388286](https://pubmed.ncbi.nlm.nih.gov/22388286/)\] aligns Illumina PE reads to references genomes.  
   * [**SRA toolkit**](https://github.com/ncbi/sra-tools) is a suite of tools allowing to access the *INSDC* content.  
@@ -80,13 +81,13 @@ Before to perform the reads assembly, we have remove *human* reads MetaShot was 
     bowtie2 -1 <R1files> -2 <R2files> -x /path/to/hg19_bowtie_index/hg19 --very-sensitive-local -p 12 -S <name.sam> --un-conc <name\_nonhumanPE>
 ```
 In particular:
- * **-1**: file(s) containing the R1 reads;  
- * **-2**: file(s) containing the R2 reads;  
- * **-x**: bowtie2 indexes;  
- * **--very-sensitive-local**: mapping preset giving prority to sensitivity;  
- * **-p**: number of available processors;  
- * **-S**: SAM file output name;   
- * **--un-conc**: by using this option 2 files containing unmapped R1 and R2 reads were generated and named *name\_nonhumanPE*.  
+    * **-1**: file(s) containing the R1 reads;  
+    * **-2**: file(s) containing the R2 reads;  
+    * **-x**: bowtie2 indexes;  
+    * **--very-sensitive-local**: mapping preset giving prority to sensitivity;  
+    * **-p**: number of available processors;  
+    * **-S**: SAM file output name;   
+    * **--un-conc**: by using this option 2 files containing unmapped R1 and R2 reads were generated and named *name\_nonhumanPE*.  
 
 In case of RNA-Seq data a mapping against *RefSeq* human transcripts was also performed:  
 ```
@@ -98,26 +99,40 @@ Please note that for DNA-Seq and RNA-SEQ data were assembled the obtained *name\
 ```
 metaspades.py -1 <name\_nonhumanPE.1>  -2 <name\_nonhumanPE.2> -t 12  -k 21,33,55,77,99 -o <name_meta>
 ```
-gli assemblaggi sono stati mascherati prima con repeatMasker:
+In particular:
+    * **-1**: file(s) containing the R1 reads;  
+    * **-2**: file(s) containing the R2 reads;  
+    * **-t**: number of available threads;  
+    * **-k**: k-mer dimensions;  
+    * **-o**: output folder name.
+    
+Following in order to mask human repeat (we used the `species human` ) we applied **RepeatMasker** on the obtained contigs: 
 ```
-RepeatMasker -species human <name_meta> che genera un file con suffisso .masked
+RepeatMasker -species human <name_meta>
 ```
-poi con windowmasker (2 comandi, 1 per calcolare le occorenze delle parole, 1 per mascherare)
+At the end of the analysis a file with the `.masked` suffix was generated.  
+**WindowMasker** allowed to indentify and mask low complexity and highly repetitive sequences.  
+Two steps were required:
+1.  Words occurrence inference: it produced the `name_meta.MK` file containing the word occurrence.
 ```
-windowmasker -in <name_meta.masked> -mk_counts > <name_meta.MK>
-
-windowmasker -in <name_meta.masked> -ustat <name_meta.MK> -dust T -outfmt fasta > <name_meta.double-masked.fasta>
+    windowmasker -in <name_meta.masked> -mk_counts > <`name_meta.MK`>
 ```
-infine ho tolto le sequenze con più di tot N con uno script molto cretino in perl, che posso caricare su github se necessario
+2. Masking: It masked the repetitive words and low-complexity regions by using the word count file generated in the previous step and the dust algorithm, respectively.  
+```
+    windowmasker -in <name_meta.masked> -ustat <name_meta.MK> -dust T -outfmt fasta > <name_meta.double-masked.fasta>
+```
+Finally, we removed contings containing more than 15% of *N*: 
 ```
 perl filter.pl <name_meta.double-masked.fasta> > <name_meta.BLAST.fasta>
 ```
-e per il blast ho usato blastn dal pacchetto blast+ con l'opzione "remote"
+
+## 3. Taxonomic assignments of the obtained contigs/scaffolds.  
+The retained contigs were taxonomically classified by using the **blastn**. The ``-remote`` options allows to query remote blast db available on the NCBI servers.  
 ```
 blastn -remote -query  <name_meta.BLAST.fasta> -db nr > name_meta_BLAST.res
 ```
-ultimo passaggio, per assegnare i metacontigs a una specie, dall'output di blast, il comando è come segue:
+
+Scaffolds were assigned to the blastn best match if it covered at least the 30% of the query sequence with a similarity percentage equal or higher than 70%, by using the following command:
 ```
 perl simple.parse.blast.pl G <name_meta_BLAST.res>
 ```
-trovi i miei 2 script Perl in questo repo su github https://github.com/matteo14c/Passaro_et_al
