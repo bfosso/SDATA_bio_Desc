@@ -1,4 +1,15 @@
 # Passaro_et_al 2020
+
+* [Requirements](#requirements)  
+    - [Bioinformatic tools and packages](#bioinformatic-tools-and-packages)
+    - [Required data files](#required-data-files)  
+* [Bioinformatic Workflow](#bioinformatic-workflow)  
+    1. [Taxonomic assignment of Illumina PE reads by exploiting MetaShot](#1-taxonomic-assignment-of-illumina-pe-reads-by-exploiting-metashot)  
+    2. [Meta-assembly of unassigned reads](#2-meta-assembly-of-unassigned-reads)
+        * [Human reads removal](#human-reads-removal)  
+        * [Metagenome Assembly](#metagenome-assembly)  
+    3. [Taxonomic assignments of the obtained contigs/scaffolds](#3-taxonomic-assignments-of-the-obtained-contigsscaffolds)
+-------------
 This repository describes all the bioinformatic steps performed in [Passaro et al 2019](https://www.nature.com/articles/s41598-019-56240-1) and **NNNNNNNN**.  
 The raw data mentioned in the paper are available in the *SRA* repository under the Bioproject [PRJNA544407](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA544407).
 The biological samples used in this study were tumors removed for therapeutic purposes from 13 patients. DNA and/or RNA were extracted and sequenced by using the Illumina NestSeq 500 platform.  
@@ -126,7 +137,7 @@ Finally, we removed contings containing more than 15% of *N*:
 perl filter.pl <name_meta.double-masked.fasta> > <name_meta.BLAST.fasta>
 ```
 
-## 3. Taxonomic assignments of the obtained contigs/scaffolds.  
+## 3. Taxonomic assignments of the obtained contigs/scaffolds  
 The retained contigs were taxonomically classified by using the **blastn**. The ``-remote`` options allows to query remote blast db available on the NCBI servers.  
 ```
 blastn -remote -query  <name_meta.BLAST.fasta> -db nr > name_meta_BLAST.res
