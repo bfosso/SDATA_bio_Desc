@@ -1,27 +1,53 @@
 # Passaro_et_al 2020
 
+* [Rationale](#rationale)
 * [Requirements](#requirements)  
     - [Bioinformatic tools and packages](#bioinformatic-tools-and-packages)
     - [Required data files](#required-data-files)  
 * [Bioinformatic Workflow](#bioinformatic-workflow)  
-    1. [Taxonomic assignment of Illumina PE reads by exploiting MetaShot](#1-taxonomic-assignment-of-illumina-pe-reads-by-exploiting-metashot)  
+    1. [Taxonomic assignment of Illumina PE reads](#1-taxonomic-assignment-of-illumina-pe-reads)  
+        * [Raw data retrieval](#raw-data-retrieval)
+        * [Metashot application](#metashot-application)
+        * [Unassigned PE reads extraction](#unassigned-pe-reads-extraction)
     2. [Meta-assembly of unassigned reads](#2-meta-assembly-of-unassigned-reads)
         * [Human reads removal](#human-reads-removal)  
         * [Metagenome Assembly](#metagenome-assembly)  
     3. [Taxonomic assignments of the obtained contigs/scaffolds](#3-taxonomic-assignments-of-the-obtained-contigsscaffolds)
 -------------
-This repository describes all the bioinformatic steps performed in [Passaro et al 2019](https://www.nature.com/articles/s41598-019-56240-1) and **NNNNNNNN**.  
-The raw data mentioned in the paper are available in the *SRA* repository under the Bioproject [PRJNA544407](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA544407).
-The biological samples used in this study were tumors removed for therapeutic purposes from 13 patients. DNA and/or RNA were extracted and sequenced by using the Illumina NestSeq 500 platform.  
+##Rationale
+In this repository are described all the bioinformatic steps discussed in [Passaro et al 2019](https://www.nature.com/articles/s41598-019-56240-1). 
+The study was focused on the metagenomic investigation of tumors samples in order to identify putative oncoviruses in immunosuppressed patients. Consistently with the major findings of several recent papers no new human tumorigenic viruses were identified. 
+The raw data mentioned in the paper are available in the *SRA* repository under the [**Bioproject PRJNA544407**](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA544407).
+In particular, the 13 biological samples used in this study were tumors ablated for therapeutic purposes from 12 patients (Table 1).  
+DNA or RNA were extracted and, according to their quality, sequenced by using the **Illumina NestSeq 500** platform. Only for patients T7 we were able to obtain both high quality DNA and RNA.  
+
+*Table1: Sample metadata and SRA data references.*  
+
+|Code|Tumor type|Nucleic acid sequenced|Immunosuppressive condition (IC)|Years from onset of IC|BioSample ID|SRA ID|
+|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+|T1|Skin squamous cell carcinoma|RNA|Renal transplantation, immunosuppressive therapy|20|SAMN11835442|SRR10202451|
+|T5|Native kidney (oncocytoma)|RNA|Renal transplantation, immunosuppressive therapy|19|SAMN11835462|SRR10202450|
+|T7|Transplanted kidney (clear cell carcinoma)|DNA|Renal transplantation, immunosuppressive therapy|3|SAMN11835463|SRS5453517|
+|T7_RNA|Transplanted kidney (clear cell carcinoma)|RNA|Renal transplantation, immunosuppressive therapy|3|SAMN12838684|SRR10202444|
+|T8|Native kidney (oncocytoma)|DNA|Renal transplantation, immunosuppressive therapy|20|SAMN11835464|SRR10202443|
+|T9|Non-Hodgkin Lymphoma|DNA|Renal transplantation, immunosuppressive therapy|12|SAMN11835496|SRR10202442|
+|T10|Colon adenocarcinoma|DNA|Renal transplantation, immunosuppressive therapy|5|SAMN11835497|SRR10202441|
+|T11|Native kidney (clear cell carcinoma)|RNA|Renal transplantation, immunosuppressive therapy|7|SAMN11835498|SRR10202440|
+|T12|Skin carcinomas|RNA|Renal transplantation, immunosuppressive therapy|12|SAMN11835499|SRR10202439|
+|T13|Skin carcinomas|RNA|Renal transplantation, immunosuppressive therapy|12|SAMN11835501|SRS5453523|
+|T14|Skin squamous cell carcinoma|RNA|Renal transplantation, immunosuppressive therapy|8|SAMN11835502|SRR10202438|
+|N4|Carcinoma of the tongue and oropharynx|RNA|Non-Hodgkin lymphoma|15|SAMN11835504|SRR10202448|
+|N6|Lip squamous cell carcinoma (HPV-neg.)|RNA|Acute lymphocytic leukemia|11|SAMN11835505|SRR10202447|
+
 The obtained sequencing data were analysed by applying a bioinformatic pipeline relying on 3 main steps:  
-1. Taxonomic assignment of Illumina PE reads by exploiting **MetaShot**;  
-2. Meta-assembly of unassigned reads;  
-3. Taxonomic assignments of the obtained contigs/scaffolds.  
+    1. Taxonomic assignment of Illumina PE reads by exploiting **MetaShot**;  
+    2. Meta-assembly of unassigned reads;  
+    3. Taxonomic assignments of the obtained contigs/scaffolds.  
 The described procedure allows users to replicate the whole procedure or just reproduce on of the steps and the intermediate data are available as a [**Zenodo**]() repository.  
 
 ## Requirements
 ### Bioinformatic tools and packages
-All the steps described below rely on several bioinformatic tools and packages whose installation and configuration is required to properly reproduce all the listed steps.  
+All the steps described below rely on several tools and packages whose installation and configuration is required to properly reproduce all the listed steps.  
 Following the list of required tools:  
   * [**MetaShot (Metagenomics Shotgun)**](https://github.com/bfosso/MetaShot) \[[PMID: 28130230](https://pubmed.ncbi.nlm.nih.gov/28130230/)\] is a pipeline designed for the complete taxonomic assessment of the human microbiota. 
   In MetaShot, third party tools and *ad hoc* developed `Python` and `Bash` scripts are integrated to analyse *paired-end (PE) Illumina reads*, offering an automated procedure covering all the steps from raw data management to taxonomic profiling. 
@@ -59,7 +85,16 @@ Nonetheless, considering that the most intense and computational expensive steps
 * [Scaffolds]()).  
 
 
-### 1. Taxonomic assignment of Illumina PE reads by exploiting MetaShot
+### 1. Taxonomic assignment of Illumina PE reads
+## Raw data retrieval
+To begin the analysis from this step, raw data download is required. To retrieve the *FASTQ* files from SRA, just use the `fastq-dump` tool from the **SRA toolkit** suite.  
+To download the sample *N6* data type the following line:
+```
+fastq-dump --split-files -O SRR10202447 `SRR10202447` 
+```
+This will generate a folder called `SRR10202447` containing 2 fastq files: `SRR10202447_1.fastq` and `SRR10202447_2.fastq`.  
+
+## Metashot application
 The whole MetaShot workflow was performed by typing the following command:  
 ```
 MetaShot_Master_script.py -m read_list.tsv -p parameters_file
@@ -76,7 +111,7 @@ It produces several files and folders but the most important are:
 * *virus_CSV_result.csv*: tabular file summarising the taxonomic assignments for viruses.  
 
 A more extensive description about MetaShot results is available [here](https://github.com/bfosso/MetaShot#result-files-interpretation).  
-
+### Unassigned PE reads extraction
 Following, the unassigned reads were extracted by using the `PE_extraction.py` script:  
 ```
 PE_extraction.py -u
