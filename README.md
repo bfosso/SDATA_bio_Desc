@@ -18,7 +18,7 @@
         * [Masking of low complexity and repeated regions in the scaffolds](#masking-of-low-complexity-and-repeated-regions-in-the-scaffolds)
         * [Scaffolds taxonomic classification](#scaffolds-taxonomic-classification) 
 -------------
-##Rationale
+## Rationale
 In this repository are described all the bioinformatic steps discussed in [Passaro et al 2019](https://www.nature.com/articles/s41598-019-56240-1). 
 The study was focused on the metagenomic investigation of tumors samples in order to identify putative oncoviruses in immunosuppressed patients. Consistently with the major findings of several recent papers no new human tumorigenic viruses were identified. 
 In particular, the 13 biological samples used in this study were tumors ablated for therapeutic purposes from 12 patients (*Table 1*).
