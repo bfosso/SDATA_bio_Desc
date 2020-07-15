@@ -4,7 +4,7 @@
 * [Requirements](#requirements)  
     - [Tools and packages](#tools-and-packages)
     - [Required data files](#required-data-files)  
-* [Bioinformatic Workflow](#bioinformatic-workflow)  
+* [Bioinformatic Workflow](#bioinformatics-workflow)  
     1. [Taxonomic assignment of Illumina PE reads](#1-taxonomic-assignment-of-illumina-pe-reads)  
         * [Raw data retrieval](#raw-data-retrieval)
         * [Metashot application](#metashot-application)
@@ -19,10 +19,10 @@
         * [Scaffolds taxonomic classification](#scaffolds-taxonomic-classification) 
 -------------
 ## Rationale
-This repository provides all the bioinformatics tools and workflows used to analyse the data in [Passaro et al 2019](https://www.nature.com/articles/s41598-019-56240-1). 
-The aim of the study was to perform  investigation of tumors samples by metagenomics analyses in order to identify putative oncoviruses in immunosuppressed patients. Consistently with the major findings of several recent papers no novel human tumorigenic viruses could be identified. 
+This repository provides all the bioinformatics tools and workflows used to analyse the data in [Passaro et al 2019](https://www.nature.com/articles/s41598-019-56240-1).  
+The aim of the study was to perform investigation of tumors samples by metagenomics analyses, in order to identify putative oncoviruses in immunosuppressed patients. Consistently with the major findings of several recent papers no novel human tumorigenic viruses could be identified. 
 The 13 biological samples used in this study were tumors ablated for therapeutic purposes from 12 patients (*Table 1*).
-DNA or RNA were extracted and, according to their quality, sequenced by using the **Illumina NestSeq 500** platform and a **Paired-Ends (PE)** layout. Only for patients T7 we were able to obtain both high quality DNA and RNA.
+DNA or RNA were extracted and, according to their quality, sequenced by using the **Illumina NestSeq 500** platform and a **Paired-Ends (PE)** layout. Only for patients **T7** we were able to obtain both high quality DNA and RNA.
 The raw data are available in the *SRA* repository under the [**Bioproject PRJNA544407**](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA544407).
 
 *Table 1: Sample metadata and SRA data references.*  
@@ -47,7 +47,7 @@ The obtained sequencing data were analysed by applying a bioinformatics pipeline
     1. Taxonomic assignment of Illumina PE reads by exploiting **MetaShot**;  
     2. Meta-assembly of unassigned reads;  
     3. Taxonomic assignments of the obtained scaffolds.  
-The described procedure allows users to replicate the whole procedure or just reproduce one specific step. The intermediate data are available as a [**Zenodo**]() repository.  
+The described method allows users to replicate the whole procedure or just reproduce one specific step. The intermediate data are available as a [**Zenodo**]() repository.  
 
 ## Requirements
 ### Tools and packages
@@ -63,7 +63,7 @@ Following the list of required tools:
   * [**Custom Perl scripts**](https://github.com/matteo14c/Passaro_et_al) developed by [Dr. Matteo Chiara](mailto:matteo.chiara@unimi.it).  
   * [**bowtie2**](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml) \[[PMID: 22388286](https://pubmed.ncbi.nlm.nih.gov/22388286/)\] aligns Illumina PE reads to references genomes.  
   * [**SRA toolkit**](https://github.com/ncbi/sra-tools) is a suite of tools allowing to access the *INSDC* content.  
-  * [**Zenodo_get**](https://gitlab.com/dvolgyes/zenodo_get) is a dowloader for Zenodo records.  
+  * [**Zenodo_get**](https://gitlab.com/dvolgyes/zenodo_get) is a downloader for Zenodo records.  
   * [**samtools**](https://github.com/samtools/samtools) \[[PMID: 19505943](https://pubmed.ncbi.nlm.nih.gov//19505943/)\] is a suite of tools for the manipulation of files in Sequence Alignment/Map format (sam). 
 
 ### Required data files
@@ -239,26 +239,28 @@ An example is enclosed in *Table 2*:
 
 Nohit is used to indicate sequence that show no significant similarity/were not assigned to any species.
 
-Only for scaffolds derived from the assembly of metatranscriptomic data (RNA samples), an additional round of taxonomic assignment was performed by a sequence similarity search against the Gencode V31 annotation of the human genome. A copy of the fasta file of the transcripts, as used in the original work, can be obtained from: XXX.
+Only for scaffolds derived from the assembly of metatranscriptomic data (RNA samples, namely T1,T5,T7_RNA,T11,T12,T13,T14,N4,N6), an additional round of taxonomic assignment was performed by a sequence similarity search against the Gencode V31 annotation of the human genome. A copy of the fasta file `Gencode_V31_transcripts.fa` is available in this repository.
 The following commands are required to execute this analysis.
 First a blast nucleotide database needs to be created from the fasta file. This can be done as follows
 ```
- makeblastdb -in Gencode_V31_transcripts.fa -dbtype nucl -out Gencode_V31
- ```
- The makeblastdb command should be included in any standard blast+ package installation. 
- Sequence similarity searches, were performed as outlined previously by means of the blastn command
- ```
- blastn -query <name_meta.BLAST.fasta> -db Gencode_V31 > name_meta_BLAST_transcriptome.res
- ```
- Please notice that the name of the "-db" argument of the **blastn** command needs to match exactly the name of the blast database that you should have created with **makeblastdb** (that is the name of the -out argument).
- 
- Finally assignment of metatranscriptomic contigs, is performed by parsing the output file of blastn by means of *simple.parse.blast.pl*
+gzip -d Gencode_V31_transcripts.fa.gz 
+
+makeblastdb -in Gencode_V31_transcripts.fa -dbtype nucl -out Gencode_V31
+```
+The makeblastdb command should be included in any standard blast+ package installation.   
+Sequence similarity searches, were performed as outlined previously by means of the blastn command
+```
+blastn -query <name_meta.BLAST.fasta> -db Gencode_V31 > name_meta_BLAST_transcriptome.res
+```
+Please notice that the name of the "-db" argument of the **blastn** command needs to match exactly the name of the blast database that you should have created with **makeblastdb** (that is the name of the -out argument).  
+
+Finally assignment of metatranscriptomic contigs, is performed by parsing the output file of blastn by means of *simple.parse.blast.pl*
 ```
 perl simple.parse.blast.pl G <name_meta_BLAST_transcriptome.res>
 ```
 #### Identification of possible integration sites of viral genomes
 
-For the 3 samples (T1, T8 and N6) in which viral specimens were detected by our analyses, we applied an *ad-hoc* method to identify possible sites of integration of such viruses in the genome of the host.
+For the 3 samples (namely T1, T8 and N6) in which viral specimens were detected by our analyses, we applied an *ad-hoc* method to identify possible sites of integration of such viruses in the genome of the host.
 For this analysis, unassigned metagenomic reads were mapped by using bowtie2 on a custom sequence database (called index) containing the metagenomic assemblies of the viral isolates identified in our the paper. The corresponding file, in fasta format, can be obtained github repository with our custom Perl scripts: [this repository ](https://github.com/matteo14c/Passaro_et_al) .  The file is called *viral_seq_Passaro_et_al.fa*
 To obtain a bowtie2 index file from the fasta, the following command is required
 ```
@@ -266,14 +268,14 @@ bowtie2-build <viral_seq_Passaro_et_al.fa> viraldb
 ```
 To map unassigned metagenomic reads to these viral scaffolds, the following command was used with bowtie2:
 ```
-    bowtie2 -1 <R1files> -2 <R2files> -x viraldb --very-sensitive-local -p 12 -S <name>.sam 
+bowtie2 -1 <R1files> -2 <R2files> -x viraldb --very-sensitive-local -p 12 -S <name>.sam 
 ```
 Please notice that *viraldb* here denotes the database of viral metagenomic scaffold as obtained by the *bowtie2-build* command.
 
 After mapping the reads, a custom Perl script called *parse_Vir_map.pl* ,which is available from [this repository ](https://github.com/matteo14c/Passaro_et_al), was applied to the output file *\<name>.sam* to retrieve reads with partial similarity to a viral genome assembly (i.e incomplete mapping) or pairs of reads for which only one mate of the pair could be confidently mapped to to a viral scaffolds. By further mapping these reads to the reference hg19 human genome assembly, we searched for possible sites of integration of the viruses in the genome of the host.  The presence of single reads or pairs of reads with partial similarity to both genomes (the virus and the host genome) indeed is considered to be indicative of integration of the virus in the host genome. 
 The command for *parse_Vir_map.pl* is as follows:
 ```
-    perl parse_Vir_map.pl name.sam
+perl parse_Vir_map.pl name.sam
 ```
 The program produces 2 output files:
     * **-1**: one, with the suffix "singleton.fq" contains "orphan" reads, that is the reads in a pair where only the mate of the read, but not the read itself could be assigned confidently to a viral scaffold   
@@ -282,10 +284,9 @@ The program produces 2 output files:
    At this point Sites/events of possible integration of viral genomes in the human host genome can be inferred by mapping back *\_singleton.fq* and *\_partial.fq* to the hg19 human genome reference assembly using bowtie2. 
    For example with these commands
 ```
-    bowtie2 --U name.sam_singleton.fq -x path/to/hg19_bowtie_index/hg19  --very-sensitive-local -S singleton.sam 
-```
-```
-    bowtie2 --U name.sam_partial.fq -x path/to/hg19_bowtie_index/hg19  --very-sensitive-local -S partial.sam 
+bowtie2 --U name.sam_singleton.fq -x path/to/hg19_bowtie_index/hg19  --very-sensitive-local -S singleton.sam 
+
+bowtie2 --U name.sam_partial.fq -x path/to/hg19_bowtie_index/hg19  --very-sensitive-local -S partial.sam 
 ```      
 In the example, the results of the mapping, will be stored in 2 files: *singleton.sam* and *partial.sam*, both in sam format.
 In Passaro et al, no evidence of integration was observed, and no read or pairs or reads showed hints of possible cross mapping on the reference and host genome.
@@ -304,4 +305,4 @@ Should you find any reads mapped to hg19, if you want to extract them from the c
     samtools view -F 4 singleton.sam 
 ```
 
-If you read up to this point, this means that either you have successfully completed the workflow, or that you just skipped to the last line. In the first case congrats! in the latter, don't worry I usually do that to!
+If you read up to this point, this means that either you have successfully completed the workflow, or that you just skipped to the last line. In the first case **congrats!** in the latter, don't worry I usually do that to!
