@@ -1,4 +1,5 @@
 # Passaro_et_al 2020
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3948399.svg)](https://doi.org/10.5281/zenodo.3948399)  
 
 * [Rationale](#rationale)
 * [Requirements](#requirements)  
@@ -30,16 +31,17 @@ The raw data are available in the *SRA* repository under the [**Bioproject PRJNA
 |Code|Tumor type|Nucleic acid sequenced|Immunosuppressive condition (IC)|Years from onset of IC|BioSample ID|SRA ID|
 |:---:|:---:|:---:|:---:|:---:|:---:|:---:|
 |T1|Skin squamous cell carcinoma|RNA|Renal transplantation, immunosuppressive therapy|20|SAMN11835442|SRR10202451|
-|T5|Native kidney (oncocytoma)|RNA|Renal transplantation, immunosuppressive therapy|19|SAMN11835462|SRR10202450|
-|T7|Transplanted kidney (clear cell carcinoma)|DNA|Renal transplantation, immunosuppressive therapy|3|SAMN11835463|SRS5453517|
-|T7_RNA|Transplanted kidney (clear cell carcinoma)|RNA|Renal transplantation, immunosuppressive therapy|3|SAMN12838684|SRR10202444|
+|T2|Skin squamous cell carcinoma|RNA|Renal transplantation, immunosuppressive therapy|9|SAMN11835461|SRR10202450|
+|T5|Native kidney (oncocytoma)|RNA|Renal transplantation, immunosuppressive therapy|19|SAMN11835462|SRR10202445|
+|T7|Transplanted kidney (clear cell carcinoma)|DNA|Renal transplantation, immunosuppressive therapy|3|SAMN11835463|SRR10202444|
+|T7_RNA|Transplanted kidney (clear cell carcinoma)|RNA|Renal transplantation, immunosuppressive therapy|3|SAMN12838684|SRR10202446|
 |T8|Native kidney (oncocytoma)|DNA|Renal transplantation, immunosuppressive therapy|20|SAMN11835464|SRR10202443|
 |T9|Non-Hodgkin Lymphoma|DNA|Renal transplantation, immunosuppressive therapy|12|SAMN11835496|SRR10202442|
 |T10|Colon adenocarcinoma|DNA|Renal transplantation, immunosuppressive therapy|5|SAMN11835497|SRR10202441|
 |T11|Native kidney (clear cell carcinoma)|RNA|Renal transplantation, immunosuppressive therapy|7|SAMN11835498|SRR10202440|
 |T12|Skin carcinomas|RNA|Renal transplantation, immunosuppressive therapy|12|SAMN11835499|SRR10202439|
-|T13|Skin carcinomas|RNA|Renal transplantation, immunosuppressive therapy|12|SAMN11835501|SRS5453523|
-|T14|Skin squamous cell carcinoma|RNA|Renal transplantation, immunosuppressive therapy|8|SAMN11835502|SRR10202438|
+|T13|Skin carcinomas|RNA|Renal transplantation, immunosuppressive therapy|12|SAMN11835501|SRR10202438|
+|T14|Skin squamous cell carcinoma|RNA|Renal transplantation, immunosuppressive therapy|8|SAMN11835502|SRR10202449|
 |N4|Carcinoma of the tongue and oropharynx|RNA|Non-Hodgkin lymphoma|15|SAMN11835504|SRR10202448|
 |N6|Lip squamous cell carcinoma (HPV-neg.)|RNA|Acute lymphocytic leukemia|11|SAMN11835505|SRR10202447|
 
