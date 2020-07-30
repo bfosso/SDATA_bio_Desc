@@ -1,4 +1,4 @@
-# Sequence analysis of tumors from immunosuppressed patients: a complete description of the bionformatic workflow
+# Sequence analysis of tumors from immunosuppressed patients: a complete description of the bioinformatic workflow
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3948399.svg)](https://doi.org/10.5281/zenodo.3948399)  
 
